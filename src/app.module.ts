@@ -3,7 +3,6 @@ import { UserModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StorageModule } from './storage/storage.module';
 
-;
 
 @Module({
   imports: [UserModule, TypeOrmModule.forRoot({
@@ -12,7 +11,7 @@ import { StorageModule } from './storage/storage.module';
     port: 3306,
     username: 'miguel',
     password: '123',
-    database: 'inventory',
+    database: 'storehub',
     autoLoadEntities: true,
     synchronize: true,
   }), StorageModule],

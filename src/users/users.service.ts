@@ -9,15 +9,15 @@ export class UserService {
   constructor(
     @InjectRepository(Users)
     private readonly UserRepository: Repository<Users>,
-  ) {}
+  ) { }
+  async existsByField(field: string, value: string): Promise<boolean> {
+    const user = await this.UserRepository.findOne({ where: { [field]: value } });
+    return !!user;
+  }
 
   async create(CreateUserDto: CreateUserDto) {
 
-    const existingCat = await this.UserRepository.findOne({ where: { username: CreateUserDto.username } });
 
-    if (existingCat) {
-      throw new BadRequestException('El nombre del Usuario ya existe');
-    }
 
 
     const savedCat = await this.UserRepository.save({ ...CreateUserDto, createDate: new Date() });

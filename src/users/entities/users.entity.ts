@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
+import { Storage } from 'src/storage/entities/storage.entity';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from 'typeorm';
 @Entity()
-@Unique(['username']) 
+@Unique(['username'])
 export class Users {
   @PrimaryGeneratedColumn()
   id: number;
@@ -14,13 +15,16 @@ export class Users {
 
   @Column()
   phone: string;
-  @Column({unique: true})
+  @Column({ unique: true })
 
-  identificationNumber:string;
+  identificationNumber: string;
   @Column()
   addres: number;
 
-  @Column({unique: true})
+  @OneToMany(() => Storage, (storage) => storage.manager)
+  managedStorages: Storage[];
+
+  @Column({ unique: true })
   email: string;
   @Column()
   createDate: Date;

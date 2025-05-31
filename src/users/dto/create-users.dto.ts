@@ -5,21 +5,25 @@ import {
   IsEmail,
   Length,
   IsNumber,
-  IsDateString,
+  ValidationArguments,
+  Validate
 } from 'class-validator';
+import { IsUnique } from '../validator/Validator-user';
 
 export class CreateUserDto {
   @IsString()
-  @IsNotEmpty()
+  @Validate(IsUnique)
   @Length(3, 20)
   username: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: "El Apellido es obligatorio"
+  })
   lastname: string;
 
   @IsString()
-  @IsNotEmpty()
+  @Validate(IsUnique)
   phone: string;
 
   @IsString()
