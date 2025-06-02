@@ -1,18 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { StorageType } from '../utils/TypeEnum-Storage';
 import { StatusGeneric } from 'src/utils/TypeGeneric';
 import { Users } from 'src/users/entities/users.entity';
 @Entity()
-@Unique(['address'])
 export class Storage {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
     nameStorage: string
-
-
-    @Column()
+    @Column({
+        unique: true
+    })
     address: string
 
     @Column({
@@ -28,10 +27,10 @@ export class Storage {
         }
     )
     Status: StatusGeneric
-    
+
     @ManyToOne(() => Users, (user) => user.managedStorages)
     manager: Users;
 
-   
+
 
 }

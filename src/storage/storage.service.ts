@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateStorageDto } from './dto/create-storage.dto';
 import { UpdateStorageDto } from './dto/update-storage.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Storage } from './entities/storage.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class StorageService {
+  constructor (
+    @InjectRepository(Storage)
+    private readonly StorageRepository: Repository<Storage>,
+  ){}
   create(createStorageDto: CreateStorageDto) {
     return 'This action adds a new storage';
   }

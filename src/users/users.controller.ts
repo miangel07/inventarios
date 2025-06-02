@@ -8,12 +8,8 @@ export class UserController {
 
   @Post()
   async create(@Body() CreateUserDto: CreateUserDto) {
-    const Create =  await this.catsService.create(CreateUserDto);
-    
-      return {
-      message: "Usuario creado Correctamente",
-      data: Create,
-    };
+    const Create = await this.catsService.create(CreateUserDto);
+    return Create;
   }
 
   @Get()
@@ -23,15 +19,18 @@ export class UserController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    
+
 
     return this.catsService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() UpdateUserDto: UpdateUserDto) {
-    return this.catsService.update(+id, UpdateUserDto);
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    updateUserDto.id = +id;
+    return this.catsService.update(+id, updateUserDto);
   }
+
+
 
   @Delete(':id')
   remove(@Param('id') id: string) {

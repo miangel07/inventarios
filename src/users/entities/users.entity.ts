@@ -1,13 +1,15 @@
+import { Role } from 'src/role/entities/role.entity';
 import { Storage } from 'src/storage/entities/storage.entity';
-import { Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from 'typeorm';
+import { StatusGeneric } from 'src/utils/TypeGeneric';
+import { Entity, PrimaryGeneratedColumn, Column,OneToMany, ManyToOne } from 'typeorm';
 @Entity()
-@Unique(['username'])
 export class Users {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-
+  @Column({
+    unique: true
+  })
   username: string;
 
   @Column()
@@ -17,9 +19,20 @@ export class Users {
   phone: string;
   @Column({ unique: true })
 
-  identificationNumber: string;
+  identificationNumber: number;
   @Column()
-  addres: number;
+  addres: string;
+
+  @Column(
+    {
+      type: "enum",
+      enum: StatusGeneric,
+      default: StatusGeneric.active
+    }
+  )
+  Status: StatusGeneric
+  @ManyToOne(() => Role, (role) => role.UsersRole)
+  Rol: Role;
 
   @OneToMany(() => Storage, (storage) => storage.manager)
   managedStorages: Storage[];
