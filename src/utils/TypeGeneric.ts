@@ -3,9 +3,9 @@ export enum StatusGeneric {
     inactive = "inactive"
 }
 
-export const FieldsGeneric = (fiels: string): { message: string } => {
+export const FieldsGeneric = (fiels: string, isNull?: string): { message: string } => {
     const data = {
-        message: `El ${fiels} es obligatorio`
+        message: `${isNull ? isNull : 'El'} ${fiels} es obligatorio`
     }
     return data
 }

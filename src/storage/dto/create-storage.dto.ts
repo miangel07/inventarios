@@ -1,18 +1,19 @@
 import { IsEnum, IsNotEmpty, IsString, IsNumber } from 'class-validator';
-import { StatusGeneric } from 'src/utils/TypeGeneric';
+import { FieldsGeneric, StatusGeneric } from 'src/utils/TypeGeneric';
 import { StorageType } from '../utils/TypeEnum-Storage';
 
 
 export class CreateStorageDto {
     @IsString()
-    @IsNotEmpty({ message: 'El nombre del almacén es obligatorio.' })
+    @IsNotEmpty(FieldsGeneric('Nombre de la bodega'))
     nameStorage: string;
 
     @IsString()
-    @IsNotEmpty({ message: 'La dirección es obligatoria.' })
+    @IsNotEmpty(FieldsGeneric('dirreción', 'La '))
     address: string;
 
     @IsEnum(StorageType, { message: 'El tipo de almacén no es válido.' })
+    @IsNotEmpty(FieldsGeneric('tipo de bodega'))
     TypeStorage: StorageType;
 
     @IsEnum(StatusGeneric, { message: 'El estado no es válido.' })
