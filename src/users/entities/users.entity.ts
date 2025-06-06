@@ -1,7 +1,7 @@
 import { Role } from 'src/role/entities/role.entity';
 import { Storage } from 'src/storage/entities/storage.entity';
-import { StatusGeneric } from 'src/utils/TypeGeneric';
-import { Entity, PrimaryGeneratedColumn, Column,OneToMany, ManyToOne } from 'typeorm';
+import { ObjetGenericStatus, StatusGeneric } from 'src/utils/TypeGeneric';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
 @Entity()
 export class Users {
   @PrimaryGeneratedColumn()
@@ -23,13 +23,7 @@ export class Users {
   @Column()
   addres: string;
 
-  @Column(
-    {
-      type: "enum",
-      enum: StatusGeneric,
-      default: StatusGeneric.active
-    }
-  )
+  @Column(ObjetGenericStatus())
   Status: StatusGeneric
   @ManyToOne(() => Role, (role) => role.UsersRole)
   Rol: Role;
