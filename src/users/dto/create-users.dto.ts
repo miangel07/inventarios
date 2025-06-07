@@ -7,10 +7,12 @@ import {
   IsNumber,
   Validate,
   isNumber,
-  IsOptional
+  IsOptional,
+  IsEnum
 } from 'class-validator';
 import { IsUnique } from '../validator/Validator-user';
 import { FieldsGeneric } from 'src/utils/TypeGeneric';
+import { TypeDocument } from '../types/TypeUsers';
 
 export class CreateUserDto {
   @IsString()
@@ -23,6 +25,11 @@ export class CreateUserDto {
   @IsNotEmpty(FieldsGeneric('Apellido'))
   lastname: string;
 
+
+  @IsString()
+  @IsNotEmpty(FieldsGeneric('contraseña',"la"))
+  password: string;
+
   @IsString()
   @Validate(IsUnique)
   phone: string;
@@ -31,6 +38,10 @@ export class CreateUserDto {
   @IsNotEmpty(FieldsGeneric('Numero de identificacion'))
   @Validate(IsUnique)
   identificationNumber: number;
+
+
+  @IsEnum(TypeDocument, { message: 'tipo de documento debe ser: cc, ti, ce' })
+  typeDocument: TypeDocument;
 
   @IsString()
   addres: string;

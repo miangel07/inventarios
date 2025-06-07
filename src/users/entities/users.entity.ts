@@ -2,6 +2,7 @@ import { Role } from 'src/role/entities/role.entity';
 import { Storage } from 'src/storage/entities/storage.entity';
 import { ObjetGenericStatus, StatusGeneric } from 'src/utils/TypeGeneric';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
+import { TypeDocument } from '../types/TypeUsers';
 @Entity()
 export class Users {
   @PrimaryGeneratedColumn()
@@ -14,17 +15,29 @@ export class Users {
 
   @Column()
   lastname: string;
+  @Column()
+  password: string;
 
   @Column()
   phone: string;
-  @Column({ unique: true })
 
+  @Column({ unique: true, nullable: true })
   identificationNumber: number;
-  @Column()
+
+  @Column({ nullable: true })
   addres: string;
 
   @Column(ObjetGenericStatus())
   Status: StatusGeneric
+
+  @Column({
+    type: "enum",
+    enum: TypeDocument,
+    nullable: true
+  })
+  typeDocument: TypeDocument
+
+
   @ManyToOne(() => Role, (role) => role.UsersRole)
   Rol: Role;
 
