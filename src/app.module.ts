@@ -13,15 +13,23 @@ import { LoansModule } from './loans/loans.module';
 import { LoanDetailsModule } from './loan-details/loan-details.module';
 import { TransfersModule } from './transfers/transfers.module';
 import { TransferDetailModule } from './transfer-detail/transfer-detail.module';
-import { ConfigModule, ConfigService, registerAs } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeormConfig from './config/typeorm.config';
+import KeyvRedis from '@keyv/redis';
 
 
 
 
 @Module({
-  imports: [CacheModule.register({
-    isGlobal: true
+  imports: [CacheModule.registerAsync({
+    isGlobal: true,
+    useFactory: async () => {
+      return {
+        stores: [
+          new KeyvRedis(process.env.REDIS_URL),
+        ],
+      };
+    },
   }), UserModule,
 
   ConfigModule.forRoot(

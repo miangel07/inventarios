@@ -6,15 +6,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { remember } from 'src/utils/CacheStores.utils';
+import { clearCacheByPrefix, remember } from 'src/utils/CacheStores.utils';
+import { PaginationQueryDto } from 'src/utils/TypeGeneric';
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(Users)
     private readonly UserRepository: Repository<Users>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) { }
-  async findByField(field: string, value: any): Promise<Users | null> {
+
+  async findByField(field: string, value: string): Promise<Users | null> {
     return this.UserRepository.findOne({ where: { [field]: value } });
   }
 
@@ -24,22 +27,58 @@ export class UserService {
     if (!savedCat) {
       throw new BadRequestException('Error al crear el usuario.');
     }
-    this.cacheManager.del('users_all')
+    await clearCacheByPrefix('users_all');
     return {
       message: "Usuario creado Correctamente",
       data: savedCat,
     };
   }
-  async findAll() {
-    const data = await remember(this.cacheManager, 'users_all', 60, async () => {
-      return this.UserRepository.find();
-    });
+  // users.service.ts
+
+  async findAll({ page = 1, limit = 10, search = '' }: PaginationQueryDto) {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await remember(
+      this.cacheManager,
+      `users_all`,
+      60,
+      async () => {
+        const query = this.UserRepository.createQueryBuilder('user');
+
+        if (search) {
+          query.where(
+            `LOWER(user.username) LIKE :search
+     OR LOWER(user.lastname) LIKE :search
+     OR LOWER(user.email) LIKE :search
+     OR LOWER(user.address) LIKE :search
+     OR LOWER(user.Status) LIKE :search
+     OR LOWER(user.typeDocument) LIKE :search
+     OR CAST(user.phone AS CHAR) LIKE :search
+     OR CAST(user.identificationNumber AS CHAR) LIKE :search`,
+            { search: `%${search.toLowerCase()}%` },
+          );
+        }
+
+        query.skip(skip).take(limit).orderBy('user.id', 'ASC');
+
+        return query.getManyAndCount();
+      },
+    );
 
     return {
       message: 'Usuarios listados correctamente',
       data,
+      meta: {
+        total,
+        page,
+        limit,
+        lastPage: Math.ceil(total / limit),
+      },
     };
   }
+
+
+
 
   async findOne(id: number) {
     const user = await this.UserRepository.findOne({ where: { id } });

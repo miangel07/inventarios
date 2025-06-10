@@ -5,6 +5,7 @@ import { UserService } from './users.service';
 import { UserController } from './users.controller';
 import { IsUnique } from './validator/Validator-user';
 
+
 /**
  * Módulo de Usuarios
  * Este módulo se encarga de agrupar todos los componentes relacionados con
@@ -46,4 +47,4 @@ import { IsUnique } from './validator/Validator-user';
     UserService,
   ]
 })
-export class UserModule {}
+export class UserModule { }

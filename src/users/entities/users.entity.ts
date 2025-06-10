@@ -25,7 +25,7 @@ export class Users {
   identificationNumber: number;
 
   @Column({ nullable: true })
-  addres: string;
+  address: string;
 
   @Column(ObjetGenericStatus())
   Status: StatusGeneric

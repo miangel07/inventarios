@@ -44,7 +44,7 @@ export class CreateUserDto {
   typeDocument: TypeDocument;
 
   @IsString()
-  addres: string;
+  address: string;
 
   @IsEmail({},
     {
