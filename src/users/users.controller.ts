@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { UserService } from './users.service';
 import { CreateUserDto } from './dto/create-users.dto';
 import { UpdateUserDto } from './dto/update-users.dto';
-import { PaginationQueryDto } from 'src/utils/TypeGeneric';
+import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
 @Controller('users')
 export class UserController {
   constructor(private readonly UserService: UserService) { }
@@ -34,8 +34,8 @@ export class UserController {
 
 
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.UserService.remove(+id);
+  @Patch(':id/status')
+  changeStatus(@Param('id') id: string, @Body('status') status: StatusGeneric) {
+    return this.UserService.changeStatus(Number(id), status);
   }
 }

@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { clearCacheByPrefix, remember } from 'src/utils/CacheStores.utils';
-import { PaginationQueryDto } from 'src/utils/TypeGeneric';
+import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
 @Injectable()
 export class UserService {
   constructor(
@@ -41,7 +41,7 @@ export class UserService {
     const [data, total] = await remember(
       this.cacheManager,
       `users_all`,
-      60,
+      60 * 60 * 24 * 7,
       async () => {
         const query = this.UserRepository.createQueryBuilder('user');
 
@@ -98,14 +98,22 @@ export class UserService {
 
     await this.UserRepository.update(id, updateUserDto);
     const dataUpdate = await this.UserRepository.findOneBy({ id });
-
+    await clearCacheByPrefix('users_all');
     return {
       message: 'Usuario actualizado correctamente',
       data: dataUpdate,
     };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} cat`;
+  async changeStatus(id: number, status: StatusGeneric) {
+    const user = await this.UserRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    user.Status = status;
+    await this.UserRepository.save(user);
+    await clearCacheByPrefix('users_all');
+    return { message: `Estado del usuario actualizado a ${status}` };
   }
 }
