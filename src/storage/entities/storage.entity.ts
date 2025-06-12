@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { StorageType } from '../utils/TypeEnum-Storage';
-import { StatusGeneric } from 'src/utils/TypeGeneric';
+import { ObjetGenericStatus, StatusGeneric } from 'src/utils/TypeGeneric';
 import { Users } from 'src/users/entities/users.entity';
 @Entity()
 export class Storage {
@@ -19,13 +19,8 @@ export class Storage {
         enum: StorageType,
     })
     TypeStorage: StorageType
-    @Column(
-        {
-            type: "enum",
-            enum: StatusGeneric,
-            default: StatusGeneric.active
-        }
-    )
+
+    @Column(ObjetGenericStatus())
     Status: StatusGeneric
 
     @ManyToOne(() => Users, (user) => user.managedStorages)

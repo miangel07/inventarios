@@ -27,9 +27,9 @@ export class UserController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    updateUserDto.id = +id;
-    return this.UserService.update(+id, updateUserDto);
+  update(@Param('id') id: string, @Body() body: Omit<UpdateUserDto, 'id'>) {
+    const dto: UpdateUserDto = { ...body, id: +id };
+    return this.UserService.update(+id, dto);
   }
 
 

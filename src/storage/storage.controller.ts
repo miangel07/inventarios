@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors } from '@nestjs/common';
 import { StorageService } from './storage.service';
 import { CreateStorageDto } from './dto/create-storage.dto';
 import { UpdateStorageDto } from './dto/update-storage.dto';
+import { PaginationQueryDto } from 'src/utils/TypeGeneric';
+import { InjectIdInterceptor } from 'src/pipes/inject-id-into-body.pipe';
 
 @Controller('storage')
 export class StorageController {
-  constructor(private readonly storageService: StorageService) {}
+  constructor(private readonly storageService: StorageService) { }
 
   @Post()
   create(@Body() createStorageDto: CreateStorageDto) {
@@ -13,8 +15,8 @@ export class StorageController {
   }
 
   @Get()
-  findAll() {
-    return this.storageService.findAll();
+  findAll(@Query() query: PaginationQueryDto) {
+    return this.storageService.findAll(query);
   }
 
   @Get(':id')
@@ -23,8 +25,9 @@ export class StorageController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStorageDto: UpdateStorageDto) {
-    return this.storageService.update(+id, updateStorageDto);
+  @UseInterceptors(InjectIdInterceptor)
+  update(@Param('id') id: string, @Body() updateDto: UpdateStorageDto) {
+    return this.storageService.update(+id, updateDto);
   }
 
   @Delete(':id')

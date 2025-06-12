@@ -23,14 +23,14 @@ export class UserService {
 
 
   async create(CreateUserDto: CreateUserDto) {
-    const savedCat = await this.UserRepository.save({ ...CreateUserDto, createDate: new Date() });
-    if (!savedCat) {
+    const savedUsers = await this.UserRepository.save({ ...CreateUserDto, createDate: new Date() });
+    if (!savedUsers) {
       throw new BadRequestException('Error al crear el usuario.');
     }
-    await clearCacheByPrefix('users_all');
+    await clearCacheByPrefix('users_all_');
     return {
       message: "Usuario creado Correctamente",
-      data: savedCat,
+      data: savedUsers,
     };
   }
   // users.service.ts
@@ -40,7 +40,7 @@ export class UserService {
 
     const [data, total] = await remember(
       this.cacheManager,
-      `users_all`,
+      `users_all_${page}_${limit}_${search.toLowerCase()}`,
       60 * 60 * 24 * 7,
       async () => {
         const query = this.UserRepository.createQueryBuilder('user');

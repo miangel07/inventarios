@@ -5,7 +5,6 @@ import {
 } from 'class-validator';
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../users.service';
-import { Users } from '../entities/users.entity';
 import { UpdateUserDto } from '../dto/update-users.dto';
 
 /**
