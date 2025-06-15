@@ -25,6 +25,7 @@ export class StorageService {
     if (!saveStorege) {
       throw new BadRequestException('Error al crear la bodega.');
     }
+    await clearCacheByPrefix('storage_all');
     return {
       message: "Bodega creada Correctamente",
       data: saveStorege,
@@ -93,7 +94,7 @@ export class StorageService {
     if (!updated) {
       throw new BadRequestException('Error al actualizar la bodega.');
     }
-    await clearCacheByPrefix('users_all');
+    await clearCacheByPrefix('storage_all');
     return {
       message: "Bodega actualizada correctamente",
       data: updated,

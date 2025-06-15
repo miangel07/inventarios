@@ -41,12 +41,9 @@ export class Product {
 
     @Column({ nullable: true })
     location?: string
-
-    @Column({ nullable: true })
-    expirationDate?: string
-
-    @Column({ nullable: true })
-    loteDate?: string
+    
+    @Column({ type: 'date', nullable: true })
+    expirationDate?: Date;
 
 
     @ManyToOne(() => MeasureUnit, (unit) => unit.Product)
