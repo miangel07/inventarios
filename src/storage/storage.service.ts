@@ -32,6 +32,8 @@ export class StorageService {
     };
   }
   async findAll({ page = 1, limit = 10, search = '' }: PaginationQueryDto) {
+
+
     const skip = (page - 1) * limit;
     const [data, total] = await remember(
       this.cacheManager,
@@ -39,18 +41,20 @@ export class StorageService {
       60 * 60 * 24 * 7,
       async () => {
         const query = this.StorageRepository.createQueryBuilder('storage')
-          .leftJoin('storage.manager', 'manager');
+          .leftJoinAndSelect('storage.manager', 'manager')
+
+
 
         if (search) {
           query.where(
-            ` LOWER(storage.nameStorage) LIKE :search
-    OR LOWER(storage.address) LIKE :search
-    OR LOWER(storage.TypeStorage) LIKE :search
-    OR LOWER(storage.Status) LIKE :search
-    OR CAST(storage.managerId AS CHAR) LIKE :search
-    OR LOWER(manager.username) LIKE :search
-    OR LOWER(manager.lastname) LIKE :search,
-    OR LOWER(manager.identificationNumber AS CHAR) LIKE :search`,
+            `LOWER(storage.nameStorage) LIKE :search
+            OR LOWER(storage.address) LIKE :search
+            OR LOWER(storage.TypeStorage) LIKE :search
+            OR LOWER(storage.Status) LIKE :search
+            OR CAST(storage.managerId AS CHAR) LIKE :search
+            OR LOWER(manager.username) LIKE :search
+            OR LOWER(manager.lastname) LIKE :search
+            OR CAST(manager.identificationNumber AS CHAR) LIKE :search`,
             { search: `%${search.toLowerCase()}%` },
           );
         }
@@ -61,9 +65,19 @@ export class StorageService {
       },
 
     );
+    const cleanData = data.map((item) => ({
+      ...item,
+      manager: item.manager
+        ? {
+            username: item.manager.username,
+            lastname: item.manager.lastname,
+          }
+        : null,
+    }));
+    
     return {
       message: data.length > 0 ? 'bodegas listadas correctamente' : 'No hay bodegas registradas',
-      data,
+      cleanData,
       meta: {
         total,
         page,
