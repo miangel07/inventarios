@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors } from '@nestjs/common';
 import { MeasureUnitService } from './measure-unit.service';
 import { CreateMeasureUnitDto } from './dto/create-measure-unit.dto';
 import { UpdateMeasureUnitDto } from './dto/update-measure-unit.dto';
+import { PaginationQueryDto } from 'src/utils/TypeGeneric';
+import { InjectIdInterceptor } from 'src/pipes/inject-id-into-body.pipe';
 
 @Controller('measure-unit')
 export class MeasureUnitController {
-  constructor(private readonly measureUnitService: MeasureUnitService) {}
+  constructor(private readonly measureUnitService: MeasureUnitService) { }
 
   @Post()
   create(@Body() createMeasureUnitDto: CreateMeasureUnitDto) {
@@ -13,8 +15,8 @@ export class MeasureUnitController {
   }
 
   @Get()
-  findAll() {
-    return this.measureUnitService.findAll();
+  findAll(@Query() query: PaginationQueryDto) {
+    return this.measureUnitService.findAll(query);
   }
 
   @Get(':id')
@@ -23,6 +25,7 @@ export class MeasureUnitController {
   }
 
   @Patch(':id')
+  @UseInterceptors(InjectIdInterceptor)
   update(@Param('id') id: string, @Body() updateMeasureUnitDto: UpdateMeasureUnitDto) {
     return this.measureUnitService.update(+id, updateMeasureUnitDto);
   }

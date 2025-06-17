@@ -1,7 +1,7 @@
 import { Category } from "src/category/entities/category.entity";
 import { MeasureUnit } from "src/measure-unit/entities/measure-unit.entity";
 import { ObjetGenericStatus, StatusGeneric } from "src/utils/TypeGeneric";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 export class Product {
 
@@ -21,14 +21,13 @@ export class Product {
     brand?: string
 
     @Column()
-    stok: number
+    stock: number
 
-    @Column()
+    @Column({ nullable: true })
+    stockMax: number
 
-    stokMax: number
-    @Column()
-
-    stokMin: number
+    @Column({ nullable: true })
+    stockMin: number
 
     @Column(ObjetGenericStatus())
     Status: StatusGeneric
@@ -41,16 +40,23 @@ export class Product {
 
     @Column({ nullable: true })
     location?: string
-    
+
     @Column({ type: 'date', nullable: true })
     expirationDate?: Date;
 
 
+    @Column()
+    measureUnitId: number;
+
     @ManyToOne(() => MeasureUnit, (unit) => unit.Product)
+    @JoinColumn({ name: 'measureUnitId' })
     measureUnit: MeasureUnit;
 
+    @Column()
+    categoryId: number;
 
-    @ManyToOne(() => Category, (Category) => Category.Product)
+    @ManyToOne(() => Category, (category) => category.Product)
+    @JoinColumn({ name: 'categoryId' })
     category: Category;
 
 

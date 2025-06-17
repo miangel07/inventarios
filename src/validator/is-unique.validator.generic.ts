@@ -37,6 +37,6 @@ export class IsUniqueConstraint implements ValidatorConstraintInterface {
 
     defaultMessage(args: ValidationArguments): string {
         const [[, field]] = args.constraints as [[Function, string]];
-        return `"El valor ${args.value}" ya está en uso en el campo `;
+        return `El valor ${args.value} ya está en uso`;
     }
 }

@@ -69,14 +69,14 @@ export class StorageService {
       ...item,
       manager: item.manager
         ? {
-            username: item.manager.username,
-            lastname: item.manager.lastname,
-          }
+          username: item.manager.username,
+          lastname: item.manager.lastname,
+        }
         : null,
     }));
-    
+
     return {
-      message: data.length > 0 ? 'bodegas listadas correctamente' : 'No hay bodegas registradas',
+      message: cleanData.length > 0 ? 'bodegas listadas correctamente' : 'No hay bodegas registradas',
       cleanData,
       meta: {
         total,
