@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseIntercepto
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { PaginationQueryDto } from 'src/utils/TypeGeneric';
+import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
 import { InjectIdInterceptor } from 'src/pipes/inject-id-into-body.pipe';
 
 @Controller('category')
@@ -30,8 +30,8 @@ export class CategoryController {
     return this.categoryService.update(+id, updateCategoryDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(+id);
+  @Patch(':id/status')
+  updateStatus(@Param('id') id: string, @Body('status') status: StatusGeneric) {
+    return this.categoryService.updateStatus(+id, status);
   }
 }

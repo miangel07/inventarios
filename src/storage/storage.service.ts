@@ -77,7 +77,7 @@ export class StorageService {
 
     return {
       message: cleanData.length > 0 ? 'bodegas listadas correctamente' : 'No hay bodegas registradas',
-      cleanData,
+      data: cleanData,
       meta: {
         total,
         page,

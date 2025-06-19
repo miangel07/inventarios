@@ -4,7 +4,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
-import { PaginationQueryDto } from 'src/utils/TypeGeneric';
+import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { clearCacheByPrefix, remember } from 'src/utils/CacheStores.utils';
 import { Cache } from 'cache-manager';
@@ -77,28 +77,41 @@ export class CategoryService {
     return `This action returns a #${id} category`;
   }
 
- async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<{ message: string; data: Category }> {
-  const category = await this.categoryRepository.preload({
-    id,
-    ...updateCategoryDto,
-  });
+  async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<{ message: string; data: Category }> {
+    const category = await this.categoryRepository.preload({
+      id,
+      ...updateCategoryDto,
+    });
 
-  if (!category) {
-    throw new NotFoundException(`Categoría con ID ${id} no encontrada`);
+    if (!category) {
+      throw new NotFoundException(`Categoría con ID ${id} no encontrada`);
+    }
+
+    const updatedCategory = await this.categoryRepository.save(category);
+
+    await clearCacheByPrefix('category_all');
+
+    return {
+      message: 'Categoría actualizada correctamente',
+      data: updatedCategory,
+    };
+  }
+  async updateStatus(id: number, status: StatusGeneric): Promise<{ message: string }> {
+    const measure = await this.categoryRepository.findOneBy({ id });
+    if (!measure) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    measure.Status = status;
+
+    await this.categoryRepository.save(measure);
+
+    await clearCacheByPrefix('category_all');
+
+    return { message: `Estado de la categoria actualizado correctamente` };
   }
 
-  const updatedCategory = await this.categoryRepository.save(category);
 
-  await clearCacheByPrefix('category_all');
-
-  return {
-    message: 'Categoría actualizada correctamente',
-    data: updatedCategory,
-  };
 }
 
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
-  }
-}

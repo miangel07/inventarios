@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseIntercepto
 import { MeasureUnitService } from './measure-unit.service';
 import { CreateMeasureUnitDto } from './dto/create-measure-unit.dto';
 import { UpdateMeasureUnitDto } from './dto/update-measure-unit.dto';
-import { PaginationQueryDto } from 'src/utils/TypeGeneric';
+import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
 import { InjectIdInterceptor } from 'src/pipes/inject-id-into-body.pipe';
 
 @Controller('measure-unit')
@@ -30,8 +30,8 @@ export class MeasureUnitController {
     return this.measureUnitService.update(+id, updateMeasureUnitDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.measureUnitService.remove(+id);
+  @Patch(':id/status')
+  updateStatus(@Param('id') id: string, @Body('status') status: StatusGeneric) {
+    return this.measureUnitService.updateStatus(+id, status);
   }
 }

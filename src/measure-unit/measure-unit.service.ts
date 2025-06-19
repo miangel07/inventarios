@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { MeasureUnit } from './entities/measure-unit.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { PaginationQueryDto } from 'src/utils/TypeGeneric';
+import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
 import { clearCacheByPrefix, remember } from 'src/utils/CacheStores.utils';
 
 
@@ -94,6 +94,21 @@ export class MeasureUnitService {
       message: 'Unidad de medida actualizada correctamente',
       data: updated,
     };
+  }
+
+  async updateStatus(id: number, status: StatusGeneric): Promise<{ message: string }> {
+    const measure = await this.measureUnitRepository.findOneBy({ id });
+    if (!measure) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    measure.Status = status;
+
+    await this.measureUnitRepository.save(measure);
+
+    await clearCacheByPrefix('MeasureUnit_all');
+
+    return { message: `Estado  actualizado correctamente` };
   }
 
 
