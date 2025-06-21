@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { StorageType } from '../utils/TypeEnum-Storage';
 import { ObjetGenericStatus, StatusGeneric } from 'src/utils/TypeGeneric';
 import { Users } from 'src/users/entities/users.entity';
+import { Inventory } from 'src/inventory/entities/inventory.entity';
 @Entity()
 export class Storage {
     @PrimaryGeneratedColumn()
@@ -23,12 +24,15 @@ export class Storage {
     @Column(ObjetGenericStatus())
     Status: StatusGeneric
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     managerId: number;
 
     @ManyToOne(() => Users, (user) => user.managedStorages)
     @JoinColumn({ name: 'managerId' })
     manager: Users;
+
+    @OneToMany(() => Inventory, (Inventory) => Inventory.storage)
+    Inventory: Inventory[];
 
 
 

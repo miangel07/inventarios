@@ -1,4 +1,4 @@
-import { IsDate, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from "class-validator";
+import { IsDate, IsDateString, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from "class-validator";
 import { FieldsGeneric } from "src/utils/TypeGeneric";
 import { IsUniqueProduct } from "../validation/validation-products";
 import { IsNull } from "typeorm";
@@ -22,8 +22,7 @@ export class CreateProductDto {
     brand?: string;
 
     @IsNumber()
-    @IsNotEmpty(FieldsGeneric('Cantidad', 'La'))
-    stock: number;
+    quantity: number;
 
     @IsOptional()
     @IsNumber()
@@ -46,16 +45,21 @@ export class CreateProductDto {
     location?: string;
 
     @IsOptional()
-    @IsDate()
+    @IsDateString()
     expirationDate?: Date
 
     @IsInt()
     @IsPositive()
     measureUnitId: number;
-  
+
     @IsInt()
     @IsPositive()
     categoryId: number;
+
+    @IsInt()
+    @IsPositive()
+    storage: number;
+
 
 
 }

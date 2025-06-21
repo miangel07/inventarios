@@ -8,5 +8,6 @@ import { MeasureUnit } from './entities/measure-unit.entity';
   imports: [TypeOrmModule.forFeature([MeasureUnit])],
   controllers: [MeasureUnitController],
   providers: [MeasureUnitService],
+  exports: [MeasureUnitService],
 })
 export class MeasureUnitModule { }

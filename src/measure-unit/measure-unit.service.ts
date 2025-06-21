@@ -72,8 +72,14 @@ export class MeasureUnitService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} measureUnit`;
+  async findOne(id: number): Promise<MeasureUnit> {
+    const unit = await this.measureUnitRepository.findOne({ where: { id } });
+
+    if (!unit) {
+      throw new NotFoundException(`Unidad de medida con id ${id} no encontrada`);
+    }
+
+    return unit;
   }
 
   async update(id: number, updateMeasureUnitDto: UpdateMeasureUnitDto): Promise<{ message: string; data: MeasureUnit }> {

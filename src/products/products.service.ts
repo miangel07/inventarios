@@ -6,12 +6,19 @@ import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { MeasureUnitService } from 'src/measure-unit/measure-unit.service';
+import { InventoryService } from 'src/inventory/inventory.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly ProducRepository: Repository<Product>,
+
+    private readonly measureUnitService: MeasureUnitService,
+
+    private readonly inventoryService: InventoryService,
+
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
   ) { }
@@ -21,14 +28,15 @@ export class ProductsService {
     const {
       measureUnitId,
       categoryId,
+      storage,
+      quantity,
       ...rest
     } = createProductDto;
 
-    const measureUnit = await this.ProducRepository.findOneBy({ id: measureUnitId });
+    const measureUnit = await this.measureUnitService.findOne(measureUnitId);
     if (!measureUnit) {
       throw new NotFoundException('Unidad de medida no encontrada');
     }
-
 
     const newProduct = this.ProducRepository.create({
       ...rest,
@@ -38,11 +46,20 @@ export class ProductsService {
 
     const savedProduct = await this.ProducRepository.save(newProduct);
 
+
+    const inventory = await this.inventoryService.create({
+      productId: savedProduct.id,
+      storageId: storage,
+      quantity: quantity,
+    });
+
     return {
       message: 'Producto creado correctamente',
       data: savedProduct,
+      Datainventory: inventory,
     };
   }
+
 
   findAll() {
     return `This action returns all products`;

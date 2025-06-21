@@ -9,5 +9,10 @@ import { IsUniqueConstraint } from 'src/validator/is-unique.validator.generic';
   imports: [TypeOrmModule.forFeature([Storage])],
   controllers: [StorageController],
   providers: [StorageService, IsUniqueConstraint],
+  exports: [
+    StorageService,
+    
+    TypeOrmModule.forFeature([Storage])
+  ]
 })
 export class StorageModule { }

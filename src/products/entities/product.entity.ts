@@ -1,7 +1,8 @@
 import { Category } from "src/category/entities/category.entity";
+import { Inventory } from "src/inventory/entities/inventory.entity";
 import { MeasureUnit } from "src/measure-unit/entities/measure-unit.entity";
 import { ObjetGenericStatus, StatusGeneric } from "src/utils/TypeGeneric";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 export class Product {
 
@@ -19,9 +20,6 @@ export class Product {
 
     @Column({ nullable: true })
     brand?: string
-
-    @Column()
-    stock: number
 
     @Column({ nullable: true })
     stockMax: number
@@ -59,5 +57,8 @@ export class Product {
     @JoinColumn({ name: 'categoryId' })
     category: Category;
 
+    
+  @OneToMany(() => Inventory, (inventory) => inventory.product)
+  inventories: Inventory[];
 
 }
