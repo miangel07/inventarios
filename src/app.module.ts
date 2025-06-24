@@ -14,6 +14,7 @@ import { LoanDetailsModule } from './loan-details/loan-details.module';
 import { TransfersModule } from './transfers/transfers.module';
 import { TransferDetailModule } from './transfer-detail/transfer-detail.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 import typeormConfig from './config/typeorm.config';
 import KeyvRedis from '@keyv/redis';
 
@@ -43,7 +44,7 @@ import KeyvRedis from '@keyv/redis';
     inject: [ConfigService],
     useFactory: (configService: ConfigService) =>
       configService.get<TypeOrmModuleOptions>('typeorm')!,
-  }), StorageModule, RoleModule, MeasureUnitModule, CategoryModule, ProductsModule, InventoryModule, CompaniesModule, LoansModule, LoanDetailsModule, TransfersModule, TransferDetailModule],
+  }), StorageModule, RoleModule, MeasureUnitModule, CategoryModule, ProductsModule, InventoryModule, CompaniesModule, LoansModule, LoanDetailsModule, TransfersModule, TransferDetailModule, AuthModule],
   controllers: [],
   providers: [],
 })

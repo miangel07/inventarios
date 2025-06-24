@@ -58,7 +58,8 @@ export class CreateProductDto {
 
     @IsInt()
     @IsPositive()
-    storage: number;
+    @IsOptional()
+    storage?: number;
 
 
 

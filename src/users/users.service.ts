@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import * as bcrypt from 'bcrypt';
 import { clearCacheByPrefix, remember } from 'src/utils/CacheStores.utils';
 import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
 @Injectable()
@@ -23,17 +24,25 @@ export class UserService {
 
 
   async create(CreateUserDto: CreateUserDto) {
-    const savedUsers = await this.UserRepository.save({ ...CreateUserDto, createDate: new Date() });
+    const hashedPassword = await bcrypt.hash(CreateUserDto.password, 10);
+
+    const savedUsers = await this.UserRepository.save({
+      ...CreateUserDto,
+      password: hashedPassword,
+      createDate: new Date(),
+    });
+
     if (!savedUsers) {
       throw new BadRequestException('Error al crear el usuario.');
     }
+
     await clearCacheByPrefix('users_all_');
     return {
-      message: "Usuario creado Correctamente",
+      message: 'Usuario creado Correctamente',
       data: savedUsers,
     };
   }
-  // users.service.ts
+
 
   async findAll({ page = 1, limit = 10, search = '' }: PaginationQueryDto) {
     const skip = (page - 1) * limit;
@@ -77,6 +86,13 @@ export class UserService {
     };
   }
 
+
+  async findByUsername(username: string) {
+    return this.UserRepository.findOne({
+      where: { username },
+      relations: ['managedStorages', 'Rol'],
+    });
+  }
 
 
 

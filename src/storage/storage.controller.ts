@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseIntercepto
 import { StorageService } from './storage.service';
 import { CreateStorageDto } from './dto/create-storage.dto';
 import { UpdateStorageDto } from './dto/update-storage.dto';
-import { PaginationQueryDto } from 'src/utils/TypeGeneric';
+import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
 import { InjectIdInterceptor } from 'src/pipes/inject-id-into-body.pipe';
 
 @Controller('storage')
@@ -30,8 +30,8 @@ export class StorageController {
     return this.storageService.update(+id, updateDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.storageService.remove(+id);
+  @Patch(':id/status')
+  changeStatus(@Param('id') id: string, @Body('status') status: StatusGeneric) {
+    return this.storageService.changeStatus(Number(id), status);
   }
 }

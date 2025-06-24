@@ -19,13 +19,13 @@ export class UserController {
     return this.UserService.findAll(query);
   }
 
-  @Get(':id')
+/*   @Get(':id')
   findOne(@Param('id') id: string) {
 
 
     return this.UserService.findOne(+id);
   }
-
+ */
   @Patch(':id')
   update(@Param('id') id: string, @Body() body: Omit<UpdateUserDto, 'id'>) {
     const dto: UpdateUserDto = { ...body, id: +id };

@@ -4,7 +4,7 @@ import { UpdateStorageDto } from './dto/update-storage.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Storage } from './entities/storage.entity';
 import { Repository } from 'typeorm';
-import { PaginationQueryDto } from 'src/utils/TypeGeneric';
+import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
 import { clearCacheByPrefix, remember } from 'src/utils/CacheStores.utils';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
@@ -117,7 +117,15 @@ export class StorageService {
 
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} storage`;
+  async changeStatus(id: number, status: StatusGeneric) {
+    const storege = await this.StorageRepository.findOneBy({ id });
+    if (!storege) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    storege.Status = status;
+    await this.StorageRepository.save(storege);
+    await clearCacheByPrefix('storage_all');
+    return { message: `Estado de la bodega actualizado a correctamente` };
   }
 }
