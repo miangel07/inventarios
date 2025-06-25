@@ -13,7 +13,7 @@ async function bootstrap() {
   const roleSeeder = app.get(RoleSeeder);
   const userSeeder = app.get(UserSeeder);
 
-  // await roleSeeder.run();
+   await roleSeeder.run();
   await userSeeder.run();
 
   await app.close();
