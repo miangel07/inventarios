@@ -97,8 +97,9 @@ export class UserService {
 
 
   async findByUsername(email: string) {
+   
     return this.UserRepository.findOne({
-      where: { email },
+      where: { email: email },
       relations: ['managedStorages', 'Rol'],
     });
   }

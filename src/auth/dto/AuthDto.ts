@@ -1,10 +1,9 @@
-import { IsString, Length } from "class-validator";
+import { IsEmail, IsString, Length } from "class-validator";
 
 
 export class AuthDto {
 
-    @IsString()
-    @Length(3, 20)
+    @IsEmail()
     email: string;
 
     @IsString()

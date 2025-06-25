@@ -12,9 +12,12 @@ export class AuthService {
   ) { }
 
   async login(email: string, password: string) {
-    const user = await this.userService.findByUsername(email);
-    if (!user) throw new UnauthorizedException('Usuario no encontrado');
+const user = await this.userService.findByUsername(email);
 
+  if (!user) throw new UnauthorizedException('Usuario no encontrado');
+
+
+    if (!user) throw new UnauthorizedException('Usuario no encontrado');
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) throw new UnauthorizedException('Contraseña incorrecta');
 
@@ -25,8 +28,7 @@ export class AuthService {
       throw new BadRequestException('Este usuario no administra ninguna bodega');
     }
 
-    // ✅ Caso 1: Si NO es storage_admin, omite selección de bodega
-    // ✅ Caso 2: Si es storage_admin y tiene exactamente 1 bodega, usar esa
+
     const isStorageAdmin = user.Rol.nameRol === 'storage_admin';
 
     if (!isStorageAdmin || storages.length === 1) {
@@ -36,7 +38,7 @@ export class AuthService {
         sub: user.id,
         username: user.username,
         role: user.Rol.nameRol,
-        storageId: storage?.id ?? null, // null si no tiene
+        storageId: storage?.id ?? null,
       };
 
       return {
@@ -53,7 +55,7 @@ export class AuthService {
       };
     }
 
-    // ⚠️ Caso 3: storage_admin con varias bodegas → requiere selección
+  
     return {
       message: 'Selecciona una bodega para continuar',
       user: {

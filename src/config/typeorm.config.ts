@@ -8,7 +8,10 @@ export default registerAs('typeorm', (): TypeOrmModuleOptions => ({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
+  charset: 'utf8mb4',
   
+
+
   synchronize: process.env.DB_SYNCHRONIZE === 'true',
   autoLoadEntities: process.env.DB_AUTO_LOAD_ENTITIES === 'true',
 

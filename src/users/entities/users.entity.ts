@@ -44,8 +44,9 @@ export class Users {
   @OneToMany(() => Storage, (storage) => storage.manager)
   managedStorages: Storage[];
 
-  @Column({ unique: true })
+  @Column({ unique: true, collation: 'utf8mb4_unicode_ci' })
   email: string;
+  
   @Column()
   createDate: Date;
 }

@@ -18,7 +18,7 @@ export class UserSeeder {
         const userData: CreateUserDto = {
             username: 'Miguel',
             password: 'admin123',
-            email: 'Miguel@example.com',
+            email: 'miguel@example.com',
             lastname: 'Osoro',
             address: 'N/A',
             typeDocument: TypeDocument.CC,

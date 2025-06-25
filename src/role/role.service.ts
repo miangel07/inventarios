@@ -23,8 +23,13 @@ export class RoleService {
     return this.roleRepository.findOne({ where: { nameRol } });
   }
 
-  findAll() {
-    return `This action returns all role`;
+async  findAll() {
+
+    const roles =await this.roleRepository.find()
+    return {
+      message: 'Roles listados Correctamente',
+      data: roles,
+    };
   }
 
   findOne(id: number) {
