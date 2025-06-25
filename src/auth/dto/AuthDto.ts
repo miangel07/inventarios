@@ -5,7 +5,7 @@ export class AuthDto {
 
     @IsString()
     @Length(3, 20)
-    username: string;
+    email: string;
 
     @IsString()
     @Length(3, 20)

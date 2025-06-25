@@ -9,11 +9,14 @@ import { Cache } from 'cache-manager';
 import * as bcrypt from 'bcrypt';
 import { clearCacheByPrefix, remember } from 'src/utils/CacheStores.utils';
 import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
+import { Role } from 'src/role/entities/role.entity';
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(Users)
     private readonly UserRepository: Repository<Users>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
   ) { }
@@ -25,9 +28,15 @@ export class UserService {
 
   async create(CreateUserDto: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(CreateUserDto.password, 10);
+    const role = await this.roleRepository.findOneBy({ id: CreateUserDto.Rol });
 
+    if (!role) {
+      throw new NotFoundException('Rol no encontrado');
+    }
     const savedUsers = await this.UserRepository.save({
       ...CreateUserDto,
+      Rol: role,
+
       password: hashedPassword,
       createDate: new Date(),
     });
@@ -87,9 +96,9 @@ export class UserService {
   }
 
 
-  async findByUsername(username: string) {
+  async findByUsername(email: string) {
     return this.UserRepository.findOne({
-      where: { username },
+      where: { email },
       relations: ['managedStorages', 'Rol'],
     });
   }
@@ -106,20 +115,38 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-
     const user = await this.UserRepository.findOneBy({ id });
     if (!user) {
       throw new NotFoundException(`Usuario con id ${id} no encontrado`);
     }
 
-    await this.UserRepository.update(id, updateUserDto);
-    const dataUpdate = await this.UserRepository.findOneBy({ id });
+    const { Rol, ...rest } = updateUserDto;
+
+    let dataToUpdate: any = { ...rest };
+
+    if (Rol !== undefined) {
+      const roleEntity = await this.roleRepository.findOneBy({ id: Rol });
+      if (!roleEntity) {
+        throw new NotFoundException(`Rol con id ${Rol} no encontrado`);
+      }
+      dataToUpdate.Rol = roleEntity;
+    }
+
+    await this.UserRepository.update(id, dataToUpdate);
+
+    const dataUpdate = await this.UserRepository.findOne({
+      where: { id },
+      relations: ['Rol'],
+    });
+
     await clearCacheByPrefix('users_all');
+
     return {
       message: 'Usuario actualizado correctamente',
       data: dataUpdate,
     };
   }
+
 
   async changeStatus(id: number, status: StatusGeneric) {
     const user = await this.UserRepository.findOneBy({ id });

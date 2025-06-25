@@ -15,8 +15,12 @@ import { TransfersModule } from './transfers/transfers.module';
 import { TransferDetailModule } from './transfer-detail/transfer-detail.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { BusinessModule } from './business/business.module';
+import { ConfigBusinessModule } from './config-business/config-business.module';
 import typeormConfig from './config/typeorm.config';
 import KeyvRedis from '@keyv/redis';
+import { UserSeeder } from './seed/users.seed';
+import { RoleSeeder } from './seed/Role.seed';
 
 
 
@@ -32,6 +36,7 @@ import KeyvRedis from '@keyv/redis';
       };
     },
   }), UserModule,
+    RoleModule,
 
   ConfigModule.forRoot(
     {
@@ -44,8 +49,12 @@ import KeyvRedis from '@keyv/redis';
     inject: [ConfigService],
     useFactory: (configService: ConfigService) =>
       configService.get<TypeOrmModuleOptions>('typeorm')!,
-  }), StorageModule, RoleModule, MeasureUnitModule, CategoryModule, ProductsModule, InventoryModule, CompaniesModule, LoansModule, LoanDetailsModule, TransfersModule, TransferDetailModule, AuthModule],
+
+
+  }), StorageModule, RoleModule, MeasureUnitModule, CategoryModule, ProductsModule, InventoryModule, CompaniesModule, LoansModule, LoanDetailsModule, TransfersModule, TransferDetailModule, AuthModule, BusinessModule, ConfigBusinessModule],
+
   controllers: [],
-  providers: [],
+  providers: [UserSeeder, RoleSeeder,
+  ],
 })
 export class AppModule { }

@@ -8,7 +8,8 @@ import {
   Validate,
   isNumber,
   IsOptional,
-  IsEnum
+  IsEnum,
+  IsPositive
 } from 'class-validator';
 import { IsUnique } from '../validator/Validator-user';
 import { FieldsGeneric } from 'src/utils/TypeGeneric';
@@ -27,7 +28,7 @@ export class CreateUserDto {
 
 
   @IsString()
-  @IsNotEmpty(FieldsGeneric('contraseña',"la"))
+  @IsNotEmpty(FieldsGeneric('contraseña', "la"))
   password: string;
 
   @IsString()
@@ -45,6 +46,11 @@ export class CreateUserDto {
 
   @IsString()
   address: string;
+
+  @IsPositive()
+  @IsNumber()
+  @IsNotEmpty(FieldsGeneric('Rol'))
+  Rol: number;
 
   @IsEmail({},
     {

@@ -4,6 +4,8 @@ import { Users } from './entities/users.entity';
 import { UserService } from './users.service';
 import { UserController } from './users.controller';
 import { IsUnique } from './validator/Validator-user';
+import { RoleService } from 'src/role/role.service';
+import { Role } from 'src/role/entities/role.entity';
 
 
 /**
@@ -18,7 +20,7 @@ import { IsUnique } from './validator/Validator-user';
    * dentro de este módulo.
    */
   imports: [
-    TypeOrmModule.forFeature([Users]),
+    TypeOrmModule.forFeature([Users, Role]),
   ],
 
   /**
@@ -35,6 +37,7 @@ import { IsUnique } from './validator/Validator-user';
   providers: [
     UserService,
     IsUnique,
+    RoleService
   ],
 
   /**
