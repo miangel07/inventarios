@@ -21,6 +21,7 @@ import typeormConfig from './config/typeorm.config';
 import KeyvRedis from '@keyv/redis';
 import { UserSeeder } from './seed/users.seed';
 import { RoleSeeder } from './seed/Role.seed';
+import { BusinessSeeder } from './seed/Business.seed';
 
 
 
@@ -38,6 +39,7 @@ import { RoleSeeder } from './seed/Role.seed';
   }), UserModule,
     RoleModule,
 
+
   ConfigModule.forRoot(
     {
       isGlobal: true,
@@ -54,7 +56,7 @@ import { RoleSeeder } from './seed/Role.seed';
   }), StorageModule, RoleModule, MeasureUnitModule, CategoryModule, ProductsModule, InventoryModule, CompaniesModule, LoansModule, LoanDetailsModule, TransfersModule, TransferDetailModule, AuthModule, BusinessModule, ConfigBusinessModule],
 
   controllers: [],
-  providers: [UserSeeder, RoleSeeder,
+  providers: [UserSeeder, RoleSeeder, BusinessSeeder
   ],
 })
 export class AppModule { }

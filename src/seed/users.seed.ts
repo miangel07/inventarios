@@ -18,6 +18,7 @@ export class UserSeeder {
         const userData: CreateUserDto = {
             username: 'Miguel',
             password: 'admin123',
+            business: 1,
             email: 'miguel@example.com',
             lastname: 'Osoro',
             address: 'N/A',
@@ -27,8 +28,8 @@ export class UserSeeder {
             Rol: 3,
         };
 
-        const result = await this.userService.create(userData);
-        if(result) {
+        const result = await this.userService.create(userData,);
+        if (result) {
             console.log('Usuario administrador creado exitosamente:', result.data);
         }
     }

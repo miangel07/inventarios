@@ -4,8 +4,12 @@ import {
     IsEnum,
     IsOptional,
     IsDateString,
+    ValidateNested,
 } from 'class-validator';
-import { BusinessStatus } from '../entities/business.entity';
+
+import { CreateConfigBusinessDto } from 'src/config-business/dto/create-config-business.dto';
+import { Type } from 'class-transformer';
+import { BusinessStatus, typeBusiness } from '../types/TypeBusiness';
 
 export class CreateBusinessDto {
     @IsString()
@@ -28,10 +32,13 @@ export class CreateBusinessDto {
     @IsOptional()
     status?: BusinessStatus;
 
-    @IsString()
+    @IsEnum(typeBusiness)
     @IsOptional()
-    notes?: string;
+    typeBusiness?: typeBusiness;
 
-    @IsNotEmpty({ message: 'La configuración es requerida' })
-    config: number; 
+    
+    @ValidateNested()
+    @Type(() => CreateConfigBusinessDto)
+    config: CreateConfigBusinessDto;
+
 }

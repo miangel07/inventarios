@@ -52,6 +52,12 @@ export class CreateUserDto {
   @IsNotEmpty(FieldsGeneric('Rol'))
   Rol: number;
 
+  
+  @IsPositive()
+  @IsNumber()
+  @IsNotEmpty(FieldsGeneric('Negocio'))
+  business: number;
+
   @IsEmail({},
     {
       message: 'El correo electrónico no es válido',

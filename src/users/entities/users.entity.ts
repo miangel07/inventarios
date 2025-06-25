@@ -3,6 +3,7 @@ import { Storage } from 'src/storage/entities/storage.entity';
 import { ObjetGenericStatus, StatusGeneric } from 'src/utils/TypeGeneric';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
 import { TypeDocument } from '../types/TypeUsers';
+import { Business } from 'src/business/entities/business.entity';
 @Entity()
 export class Users {
   @PrimaryGeneratedColumn()
@@ -44,9 +45,12 @@ export class Users {
   @OneToMany(() => Storage, (storage) => storage.manager)
   managedStorages: Storage[];
 
+  @ManyToOne(() => Business, (Business) => Business.user)
+  Business: Business;
+
   @Column({ unique: true, collation: 'utf8mb4_unicode_ci' })
   email: string;
-  
+
   @Column()
   createDate: Date;
 }

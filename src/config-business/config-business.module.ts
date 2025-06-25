@@ -11,6 +11,7 @@ import { Business } from 'src/business/entities/business.entity';
       ConfigBusiness,
       Business
     ]),
+    ConfigBusinessModule
   ],
   controllers: [ConfigBusinessController],
   providers: [ConfigBusinessService],

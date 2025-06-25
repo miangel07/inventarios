@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Business } from 'src/business/entities/business.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+
 
 @Entity()
 export class ConfigBusiness {
@@ -7,15 +8,22 @@ export class ConfigBusiness {
   id: number;
 
   @Column({
-    default:5
+    default: false,
+    nullable: true,
+  })
+  infinty: boolean;
+
+
+  @Column({
+    default: 5
   })
   cuantityUsers: number;
 
   @Column({
-    default:5
+    default: 5
   })
   maxStorage: number;
 
-  @OneToMany(() => Business, (business) => business.config)
-  businesses: Business[];
+  @ManyToOne(() => Business, (Business) => Business.config)
+  Business: Business;
 }

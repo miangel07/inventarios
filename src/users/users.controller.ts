@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
 import { UserService } from './users.service';
 import { CreateUserDto } from './dto/create-users.dto';
 import { UpdateUserDto } from './dto/update-users.dto';
@@ -8,7 +8,7 @@ export class UserController {
   constructor(private readonly UserService: UserService) { }
 
   @Post()
-  async create(@Body() CreateUserDto: CreateUserDto) {
+  async create(@Body() CreateUserDto: CreateUserDto, @Req() req: any,) {
     const Create = await this.UserService.create(CreateUserDto);
     return Create;
   }
@@ -19,13 +19,13 @@ export class UserController {
     return this.UserService.findAll(query);
   }
 
-/*   @Get(':id')
-  findOne(@Param('id') id: string) {
-
-
-    return this.UserService.findOne(+id);
-  }
- */
+  /*   @Get(':id')
+    findOne(@Param('id') id: string) {
+  
+  
+      return this.UserService.findOne(+id);
+    }
+   */
   @Patch(':id')
   update(@Param('id') id: string, @Body() body: Omit<UpdateUserDto, 'id'>) {
     const dto: UpdateUserDto = { ...body, id: +id };

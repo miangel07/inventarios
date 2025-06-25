@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { clearCacheByPrefix, remember } from 'src/utils/CacheStores.utils';
 import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
 import { Role } from 'src/role/entities/role.entity';
+import { Business } from 'src/business/entities/business.entity';
 @Injectable()
 export class UserService {
   constructor(
@@ -17,6 +18,8 @@ export class UserService {
     private readonly UserRepository: Repository<Users>,
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
+    @InjectRepository(Role)
+    private readonly businessRepository: Repository<Business>,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
   ) { }
@@ -27,16 +30,22 @@ export class UserService {
 
 
   async create(CreateUserDto: CreateUserDto) {
+
+
     const hashedPassword = await bcrypt.hash(CreateUserDto.password, 10);
     const role = await this.roleRepository.findOneBy({ id: CreateUserDto.Rol });
+    const business = await this.businessRepository.findOneBy({ id: CreateUserDto.business });
 
     if (!role) {
       throw new NotFoundException('Rol no encontrado');
     }
+    if (!business) {
+      throw new NotFoundException('Neogocio no encontrado');
+    }
     const savedUsers = await this.UserRepository.save({
       ...CreateUserDto,
       Rol: role,
-
+      Business: business,
       password: hashedPassword,
       createDate: new Date(),
     });
@@ -97,10 +106,10 @@ export class UserService {
 
 
   async findByUsername(email: string) {
-   
+
     return this.UserRepository.findOne({
       where: { email: email },
-      relations: ['managedStorages', 'Rol'],
+      relations: ['managedStorages', 'Rol', 'Business'],
     });
   }
 

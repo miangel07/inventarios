@@ -14,5 +14,6 @@ import { Business } from './entities/business.entity';
   ],
   controllers: [BusinessController],
   providers: [BusinessService],
+  exports: [BusinessService],
 })
 export class BusinessModule { }

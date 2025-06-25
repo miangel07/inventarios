@@ -12,9 +12,9 @@ export class AuthService {
   ) { }
 
   async login(email: string, password: string) {
-const user = await this.userService.findByUsername(email);
+    const user = await this.userService.findByUsername(email);
 
-  if (!user) throw new UnauthorizedException('Usuario no encontrado');
+    if (!user) throw new UnauthorizedException('Usuario no encontrado');
 
 
     if (!user) throw new UnauthorizedException('Usuario no encontrado');
@@ -38,6 +38,7 @@ const user = await this.userService.findByUsername(email);
         sub: user.id,
         username: user.username,
         role: user.Rol.nameRol,
+        business: user.Business,
         storageId: storage?.id ?? null,
       };
 
@@ -47,6 +48,7 @@ const user = await this.userService.findByUsername(email);
           id: user.id,
           username: user.username,
           role: user.Rol.nameRol,
+          business: user.Business,
           storage: storage
             ? { id: storage.id, name: storage.nameStorage }
             : null,
@@ -55,13 +57,14 @@ const user = await this.userService.findByUsername(email);
       };
     }
 
-  
+
     return {
       message: 'Selecciona una bodega para continuar',
       user: {
         id: user.id,
         username: user.username,
         role: user.Rol.nameRol,
+        business: user.Business,
         storages: storages.map((s) => ({
           id: s.id,
           name: s.nameStorage,
@@ -83,6 +86,7 @@ const user = await this.userService.findByUsername(email);
       sub: user?.id,
       username: user?.Rol,
       role: user?.Rol.nameRol,
+      business: user?.Business,
       storageId,
     };
 
@@ -90,6 +94,7 @@ const user = await this.userService.findByUsername(email);
       access_token: this.jwtService.sign(payload),
       user: {
         id: user?.id,
+        business: user?.Business,
         username: user?.username,
         role: user?.Rol.nameRol,
         storageId,
