@@ -38,6 +38,7 @@ export class AuthService {
         sub: user.id,
         username: user.username,
         role: user.Rol.nameRol,
+        email: user.email,
         business: user.Business,
         storageId: storage?.id ?? null,
       };
@@ -47,6 +48,7 @@ export class AuthService {
         user: {
           id: user.id,
           username: user.username,
+          email: user.email,
           role: user.Rol.nameRol,
           business: user.Business,
           storage: storage
@@ -63,6 +65,7 @@ export class AuthService {
       user: {
         id: user.id,
         username: user.username,
+        email: user.email,
         role: user.Rol.nameRol,
         business: user.Business,
         storages: storages.map((s) => ({
@@ -83,10 +86,11 @@ export class AuthService {
     }
 
     const payload = {
-      sub: user?.id,
-      username: user?.Rol,
-      role: user?.Rol.nameRol,
+      id: user?.id,
       business: user?.Business,
+      username: user?.username,
+      email: user?.email,
+      role: user?.Rol.nameRol,
       storageId,
     };
 
@@ -96,6 +100,7 @@ export class AuthService {
         id: user?.id,
         business: user?.Business,
         username: user?.username,
+        email: user?.email,
         role: user?.Rol.nameRol,
         storageId,
       },
