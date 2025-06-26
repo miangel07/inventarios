@@ -47,16 +47,21 @@ export class CreateUserDto {
   @IsString()
   address: string;
 
-  @IsPositive()
+  @IsOptional()
   @IsNumber()
   @IsNotEmpty(FieldsGeneric('Rol'))
-  Rol: number;
+  Rol?: number;
 
-  
+
   @IsPositive()
   @IsNumber()
   @IsNotEmpty(FieldsGeneric('Negocio'))
   business: number;
+
+  @IsPositive()
+  @IsNumber()
+  @IsOptional()
+  storageId?: number;
 
   @IsEmail({},
     {

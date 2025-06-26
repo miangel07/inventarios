@@ -27,9 +27,10 @@ export class Storage {
     @Column({ nullable: true })
     managerId: number;
 
-    @ManyToOne(() => Users, (user) => user.managedStorages)
+    @ManyToOne(() => Users, (user) => user.managedStorages, { eager: false })
     @JoinColumn({ name: 'managerId' })
     manager: Users;
+
 
     @OneToMany(() => Inventory, (Inventory) => Inventory.storage)
     Inventory: Inventory[];

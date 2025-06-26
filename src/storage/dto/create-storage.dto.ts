@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString, IsNumber, Validate } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, IsNumber, Validate, IsOptional } from 'class-validator';
 import { FieldsGeneric, StatusGeneric } from 'src/utils/TypeGeneric';
 import { StorageType } from '../utils/TypeEnum-Storage';
 import { IsUniqueStorage } from '../validator/validator-storage';
@@ -20,6 +20,7 @@ export class CreateStorageDto {
     TypeStorage: StorageType;
 
 
-    @IsNumber({}, { message: 'Debes seleccionar una opcion valida.' })
-    managerId: number;
+    @IsNumber()
+    @IsOptional()
+    managerId?: number;
 }

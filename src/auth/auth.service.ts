@@ -39,7 +39,7 @@ export class AuthService {
         username: user.username,
         role: user.Rol.nameRol,
         email: user.email,
-        business: user.Business,
+        businessId: user?.Business.id,
         storageId: storage?.id ?? null,
       };
 
@@ -50,7 +50,7 @@ export class AuthService {
           username: user.username,
           email: user.email,
           role: user.Rol.nameRol,
-          business: user.Business,
+          businessId: user?.Business.id,
           storage: storage
             ? { id: storage.id, name: storage.nameStorage }
             : null,
@@ -67,7 +67,7 @@ export class AuthService {
         username: user.username,
         email: user.email,
         role: user.Rol.nameRol,
-        business: user.Business,
+        businessId: user?.Business.id,
         storages: storages.map((s) => ({
           id: s.id,
           name: s.nameStorage,
@@ -87,7 +87,7 @@ export class AuthService {
 
     const payload = {
       id: user?.id,
-      business: user?.Business,
+      businessId: user?.Business.id,
       username: user?.username,
       email: user?.email,
       role: user?.Rol.nameRol,
@@ -98,7 +98,7 @@ export class AuthService {
       access_token: this.jwtService.sign(payload),
       user: {
         id: user?.id,
-        business: user?.Business,
+        businessId: user?.Business.id,
         username: user?.username,
         email: user?.email,
         role: user?.Rol.nameRol,

@@ -1,17 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './users.service';
 import { CreateUserDto } from './dto/create-users.dto';
 import { UpdateUserDto } from './dto/update-users.dto';
 import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
+import { CreateUserStorageDto } from './dto/create-userStorage';
+import { Roles } from 'src/auth/roles.decorator';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 @Controller('users')
 export class UserController {
   constructor(private readonly UserService: UserService) { }
 
   @Post()
   async create(@Body() CreateUserDto: CreateUserDto, @Req() req: any,) {
-    const Create = await this.UserService.create(CreateUserDto);
+    const Create = await this.UserService.create(CreateUserDto, req.user);
     return Create;
   }
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @Post('createUserStorage')
+  async createUserStorage(@Body() CreateUserDto: CreateUserStorageDto, @Req() req: any,) {
+    const Create = await this.UserService.createUserStorage(CreateUserDto, req.user);
+    return Create;
+  }
+
 
 
   @Get()

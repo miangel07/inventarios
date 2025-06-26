@@ -6,6 +6,7 @@ import { UserController } from './users.controller';
 import { IsUnique } from './validator/Validator-user';
 import { RoleService } from 'src/role/role.service';
 import { Role } from 'src/role/entities/role.entity';
+import { Storage } from 'src/storage/entities/storage.entity';
 
 
 /**
@@ -20,7 +21,7 @@ import { Role } from 'src/role/entities/role.entity';
    * dentro de este módulo.
    */
   imports: [
-    TypeOrmModule.forFeature([Users, Role]),
+    TypeOrmModule.forFeature([Users, Role,Storage]),
   ],
 
   /**

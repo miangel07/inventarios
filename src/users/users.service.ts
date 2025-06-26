@@ -8,9 +8,12 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import * as bcrypt from 'bcrypt';
 import { clearCacheByPrefix, remember } from 'src/utils/CacheStores.utils';
-import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
+import { PaginationQueryDto, paramsQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
 import { Role } from 'src/role/entities/role.entity';
 import { Business } from 'src/business/entities/business.entity';
+
+import { CreateUserStorageDto } from './dto/create-userStorage';
+import { Storage } from 'src/storage/entities/storage.entity';
 @Injectable()
 export class UserService {
   constructor(
@@ -20,6 +23,8 @@ export class UserService {
     private readonly roleRepository: Repository<Role>,
     @InjectRepository(Role)
     private readonly businessRepository: Repository<Business>,
+    @InjectRepository(Storage)
+    private readonly storageRepository: Repository<Storage>,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
   ) { }
@@ -29,12 +34,13 @@ export class UserService {
   }
 
 
-  async create(CreateUserDto: CreateUserDto) {
+  async create(CreateUserDto: CreateUserDto, user?: paramsQueryDto) {
 
 
     const hashedPassword = await bcrypt.hash(CreateUserDto.password, 10);
     const role = await this.roleRepository.findOneBy({ id: CreateUserDto.Rol });
-    const business = await this.businessRepository.findOneBy({ id: CreateUserDto.business });
+    const isrole = role?.nameRol === 'super_adimin'
+    const business = await this.businessRepository.findOneBy({ id: isrole ? CreateUserDto.business : user?.businessId });
 
     if (!role) {
       throw new NotFoundException('Rol no encontrado');
@@ -61,6 +67,49 @@ export class UserService {
     };
   }
 
+  async createUserStorage(CreateUserDto: CreateUserStorageDto, user: paramsQueryDto) {
+    const { storageData, ...userData } = CreateUserDto
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+    const role = await this.roleRepository.findOneBy({ id: userData.Rol });
+    const business = await this.businessRepository.findOneBy({ id: user.businessId });
+
+    if (!role) {
+      throw new NotFoundException('Rol no encontrado');
+    }
+
+    if (!business) {
+      throw new NotFoundException('Negocio no encontrado');
+    }
+
+    const savedUsers = await this.UserRepository.save({
+      ...userData,
+      Rol: role,
+      Business: business,
+      password: hashedPassword,
+      createDate: new Date(),
+    });
+
+    if (!savedUsers) {
+      throw new BadRequestException('Error al crear el usuario.');
+    }
+
+    await this.storageRepository.save({
+      nameStorage: storageData.nameStorage,
+      address: storageData.address,
+      TypeStorage: storageData.TypeStorage,
+      manager: savedUsers,
+    });
+
+    await clearCacheByPrefix('users_all_');
+
+    return {
+      message: 'Usuario y bodega creado correctamente',
+      data: savedUsers,
+    };
+  }
+
+
 
   async findAll({ page = 1, limit = 10, search = '' }: PaginationQueryDto) {
     const skip = (page - 1) * limit;
@@ -70,7 +119,8 @@ export class UserService {
       `users_all_${page}_${limit}_${search.toLowerCase()}`,
       60 * 60 * 24 * 7,
       async () => {
-        const query = this.UserRepository.createQueryBuilder('user');
+        const query = this.UserRepository.createQueryBuilder('user')
+          .leftJoinAndSelect('user.managedStorages', 'storage');
 
         if (search) {
           query.where(

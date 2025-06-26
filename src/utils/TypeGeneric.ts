@@ -38,3 +38,7 @@ export class PaginationQueryDto {
     @IsString()
     search?: string;
 }
+
+
+
+export interface paramsQueryDto { storageId: number, role: string, businessId: number }

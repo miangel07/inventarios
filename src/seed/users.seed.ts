@@ -28,7 +28,7 @@ export class UserSeeder {
             Rol: 3,
         };
 
-        const result = await this.userService.create(userData,);
+        const result = await this.userService.create(userData);
         if (result) {
             console.log('Usuario administrador creado exitosamente:', result.data);
         }

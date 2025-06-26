@@ -9,7 +9,7 @@ import { Cache } from 'cache-manager';
 import { MeasureUnitService } from 'src/measure-unit/measure-unit.service';
 import { InventoryService } from 'src/inventory/inventory.service';
 import { clearCacheByPrefix, remember } from 'src/utils/CacheStores.utils';
-import { PaginationQueryDto } from 'src/utils/TypeGeneric';
+import { PaginationQueryDto, paramsQueryDto } from 'src/utils/TypeGeneric';
 
 @Injectable()
 export class ProductsService {
@@ -26,7 +26,7 @@ export class ProductsService {
   ) { }
 
   // falta crear las categorias y la unidad de medida para poder registrar un producto
-  async create(createProductDto: CreateProductDto, user: { storageId: number, role: string },) {
+  async create(createProductDto: CreateProductDto, user: paramsQueryDto) {
     const {
       measureUnitId,
       categoryId,
