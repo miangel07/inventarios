@@ -120,12 +120,12 @@ export class StorageService {
   async changeStatus(id: number, status: StatusGeneric) {
     const storege = await this.StorageRepository.findOneBy({ id });
     if (!storege) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('Bodega no encontrada');
     }
 
     storege.Status = status;
-    await this.StorageRepository.save(storege);
+    const bodega = await this.StorageRepository.save(storege);
     await clearCacheByPrefix('storage_all');
-    return { message: `Estado de la bodega actualizado a correctamente` };
+    return { message: `Estado de la bodega actualizado a correctamente `,data: bodega};
   }
 }

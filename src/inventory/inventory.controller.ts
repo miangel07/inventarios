@@ -5,7 +5,7 @@ import { UpdateInventoryDto } from './dto/update-inventory.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
-
+ @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('inventory')
 export class InventoryController {
   constructor(private readonly inventoryService: InventoryService) { }
@@ -15,8 +15,8 @@ export class InventoryController {
     return this.inventoryService.create(createInventoryDto);
   }
 
-/*   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'almacenista') */
+
+  @Roles('admin', 'store_admin') 
   @Get()
   findAll() {
     return this.inventoryService.findAll();

@@ -46,14 +46,14 @@ export class ProductsService {
       categoryId,
     });
 
-    const savedProduct = await this.ProducRepository.save(newProduct);
-
+    
     const storageId = user?.role === 'admin' ? storage : user.storageId;
-
+    
     if (typeof storageId !== 'number') {
       throw new BadRequestException('No se pudo determinar la bodega (storageId)');
     }
-
+    
+    const savedProduct = await this.ProducRepository.save(newProduct);
     const inventory = await this.inventoryService.create({
       productId: savedProduct.id,
       storageId,

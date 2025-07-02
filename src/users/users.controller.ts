@@ -12,7 +12,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 @Controller('users')
 export class UserController {
   constructor(private readonly UserService: UserService) { }
-
+  @Roles('admin', 'super_admin')
   @Post()
   async create(@Body() CreateUserDto: CreateUserDto, @Req() req: any,) {
     const Create = await this.UserService.create(CreateUserDto, req.user);

@@ -39,7 +39,7 @@ export class UserService {
 
     const hashedPassword = await bcrypt.hash(CreateUserDto.password, 10);
     const role = await this.roleRepository.findOneBy({ id: CreateUserDto.Rol });
-    const isrole = role?.nameRol === 'super_adimin'
+    const isrole = role?.nameRol === 'super_admin'
     const business = await this.businessRepository.findOneBy({ id: isrole ? CreateUserDto.business : user?.businessId });
 
     if (!role) {

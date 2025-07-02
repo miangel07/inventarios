@@ -1,7 +1,7 @@
-import { IsDate, IsDateString, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from "class-validator";
+import {  IsDateString, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from "class-validator";
 import { FieldsGeneric } from "src/utils/TypeGeneric";
 import { IsUniqueProduct } from "../validation/validation-products";
-import { IsNull } from "typeorm";
+
 
 export class CreateProductDto {
     @IsString()

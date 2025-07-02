@@ -5,7 +5,8 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationQueryDto } from 'src/utils/TypeGeneric';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { Roles } from 'src/auth/roles.decorator';
-
+import { RolesGuard } from 'src/auth/roles.guard';
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
@@ -16,7 +17,6 @@ export class ProductsController {
     return this.productsService.create(createProductDto, req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   @Roles('admin', 'storage_admin')
   async findAll(
