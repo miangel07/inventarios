@@ -15,13 +15,10 @@ export class BusinessController {
   create(@Body() createBusinessDto: CreateBusinessDto) {
     return this.businessService.create(createBusinessDto);
   }
-  @Get()
+
   @Roles('super_admin')
-  getAdminStuff() {
-    return 'No tiene acceso a esta ruta';
-  }
-  findAll(@Query() pagination: PaginationQueryDto,
-    @Req() req: any,) {
+  @Get()
+  findAll(@Query() pagination: PaginationQueryDto, @Req() req: any) {
     return this.businessService.findAll(pagination, req.user);
   }
 
