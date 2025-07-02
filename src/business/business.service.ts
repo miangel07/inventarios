@@ -6,7 +6,7 @@ import { Business } from './entities/business.entity';
 import { Repository } from 'typeorm';
 import { ConfigBusiness } from 'src/config-business/entities/config-business.entity';
 import { PaginationQueryDto } from 'src/utils/TypeGeneric';
-import { remember } from 'src/utils/CacheStores.utils';
+import { clearCacheByPrefix, remember } from 'src/utils/CacheStores.utils';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 
@@ -41,7 +41,12 @@ export class BusinessService {
       Business: savedBusiness,
     });
 
-    await this.configBusinessRepository.save(newConfig);
+    const ConfigBusinees = await this.configBusinessRepository.save(newConfig);
+    if (ConfigBusinees) {
+
+      await clearCacheByPrefix('users_all_');
+    }
+
 
     return {
       message: 'Negocio Creado Correctamente',
@@ -62,7 +67,7 @@ export class BusinessService {
     const { entities, total } = await remember(
       this.cacheManager,
       cacheKey,
-      60 * 60 * 24 * 7, 
+      60 * 60 * 24 * 7,
       async () => {
         const baseQuery = this.businessRepository
           .createQueryBuilder('business')

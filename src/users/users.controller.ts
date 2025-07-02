@@ -6,6 +6,9 @@ import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
 import { CreateUserStorageDto } from './dto/create-userStorage';
 import { Roles } from 'src/auth/roles.decorator';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+@UseGuards(JwtAuthGuard, RolesGuard)
+
 @Controller('users')
 export class UserController {
   constructor(private readonly UserService: UserService) { }
@@ -15,7 +18,7 @@ export class UserController {
     const Create = await this.UserService.create(CreateUserDto, req.user);
     return Create;
   }
-  @UseGuards(JwtAuthGuard)
+
   @Roles('admin')
   @Post('createUserStorage')
   async createUserStorage(@Body() CreateUserDto: CreateUserStorageDto, @Req() req: any,) {

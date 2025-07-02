@@ -10,7 +10,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 @Controller('business')
 export class BusinessController {
   constructor(private readonly businessService: BusinessService) { }
-
+  @Roles('super_admin')
   @Post()
   create(@Body() createBusinessDto: CreateBusinessDto) {
     return this.businessService.create(createBusinessDto);
@@ -21,17 +21,18 @@ export class BusinessController {
   findAll(@Query() pagination: PaginationQueryDto, @Req() req: any) {
     return this.businessService.findAll(pagination, req.user);
   }
-
+  
+  @Roles('super_admin')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.businessService.findOne(+id);
   }
-
+  @Roles('super_admin')
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBusinessDto: UpdateBusinessDto) {
     return this.businessService.update(+id, updateBusinessDto);
   }
-
+  @Roles('super_admin')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.businessService.remove(+id);
