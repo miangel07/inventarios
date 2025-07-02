@@ -4,7 +4,6 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationQueryDto } from 'src/utils/TypeGeneric';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 
 @Controller('products')
@@ -24,7 +23,6 @@ export class ProductsController {
     @Query() pagination: PaginationQueryDto,
     @Req() req: any,
   ) {
-    console.log('User:', req.user);
     return this.productsService.findAll(pagination, req.user);
   }
 

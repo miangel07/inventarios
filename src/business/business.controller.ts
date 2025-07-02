@@ -1,20 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, UseGuards } from '@nestjs/common';
 import { BusinessService } from './business.service';
 import { CreateBusinessDto } from './dto/create-business.dto';
 import { UpdateBusinessDto } from './dto/update-business.dto';
+import { PaginationQueryDto } from 'src/utils/TypeGeneric';
+import { Roles } from 'src/auth/roles.decorator';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
 @Controller('business')
 export class BusinessController {
-  constructor(private readonly businessService: BusinessService) {}
+  constructor(private readonly businessService: BusinessService) { }
 
   @Post()
   create(@Body() createBusinessDto: CreateBusinessDto) {
     return this.businessService.create(createBusinessDto);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.businessService.findAll();
+  @Roles('storage_admin')
+  getAdminStuff() {
+    return 'Solo admin accede aquí';
+  }
+  findAll(@Query() pagination: PaginationQueryDto,
+    @Req() req: any,) {
+    return this.businessService.findAll(pagination, req.user);
   }
 
   @Get(':id')
