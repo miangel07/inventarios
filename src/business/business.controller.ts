@@ -5,7 +5,8 @@ import { UpdateBusinessDto } from './dto/update-business.dto';
 import { PaginationQueryDto } from 'src/utils/TypeGeneric';
 import { Roles } from 'src/auth/roles.decorator';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-
+import { RolesGuard } from 'src/auth/roles.guard';
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('business')
 export class BusinessController {
   constructor(private readonly businessService: BusinessService) { }
@@ -14,11 +15,10 @@ export class BusinessController {
   create(@Body() createBusinessDto: CreateBusinessDto) {
     return this.businessService.create(createBusinessDto);
   }
-  @UseGuards(JwtAuthGuard)
   @Get()
-  @Roles('storage_admin')
+  @Roles('super_admin')
   getAdminStuff() {
-    return 'Solo admin accede aquí';
+    return 'No tiene acceso a esta ruta';
   }
   findAll(@Query() pagination: PaginationQueryDto,
     @Req() req: any,) {
