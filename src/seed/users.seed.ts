@@ -25,7 +25,7 @@ export class UserSeeder {
             typeDocument: TypeDocument.CC,
             phone: '3136789456',
             identificationNumber: 1006459235,
-            Rol: 3,
+            Rol: 1,
         };
 
         const result = await this.userService.create(userData);

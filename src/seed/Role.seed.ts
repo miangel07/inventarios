@@ -8,7 +8,7 @@ export class RoleSeeder {
     constructor(private readonly roleService: RoleService) { }
 
     async run() {
-        const defaultRoles = ['admin', 'storage_admin','super_admin'];
+        const defaultRoles = ['super_admin', 'admin', 'storage_admin'];
 
         for (const name of defaultRoles) {
             const exists = await this.roleService.findByName(name);
