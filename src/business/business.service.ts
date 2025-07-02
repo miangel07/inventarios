@@ -44,7 +44,7 @@ export class BusinessService {
     const ConfigBusinees = await this.configBusinessRepository.save(newConfig);
     if (ConfigBusinees) {
 
-      await clearCacheByPrefix('users_all_');
+      await clearCacheByPrefix('business_all_');
     }
 
 
