@@ -13,7 +13,7 @@ export class AuthService {
 
   async login(email: string, password: string) {
     const user = await this.userService.findByUsername(email);
-
+    console.log("user", user)
     if (!user) throw new UnauthorizedException('Usuario no encontrado');
 
 
@@ -42,7 +42,7 @@ export class AuthService {
         businessId: user?.Business.id,
         storageId: storage?.id ?? null,
       };
-
+console.log('Payload que se firma:', payload);
       return {
         access_token: this.jwtService.sign(payload),
         user: {

@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColum
 import { ConfigBusiness } from 'src/config-business/entities/config-business.entity';
 import { BusinessStatus, typeBusiness } from '../types/TypeBusiness';
 import { Users } from 'src/users/entities/users.entity';
+import { Product } from 'src/products/entities/product.entity';
 
 
 
@@ -33,6 +34,10 @@ export class Business {
     @OneToMany(() => Users, (user) => user.Business)
     @JoinColumn({ name: 'userId' })
     user: Users[];
+
+    @OneToMany(() => Product, (Product) => Product.businessId)
+    @JoinColumn({ name: 'ProductoId' })
+    Producto: Product[];
 
     @OneToMany(() => ConfigBusiness, (ConfigBusiness) => ConfigBusiness.Business)
     config: ConfigBusiness[];

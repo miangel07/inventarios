@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBusinessDto } from './dto/create-business.dto';
 import { UpdateBusinessDto } from './dto/update-business.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -114,9 +114,55 @@ export class BusinessService {
     return `This action returns a #${id} business`;
   }
 
-  update(id: number, updateBusinessDto: UpdateBusinessDto) {
-    return `This action updates a #${id} business`;
+  async update(id: number, updateBusinessDto: UpdateBusinessDto) {
+    const { config, ...businessData } = updateBusinessDto;
+
+    const business = await this.businessRepository.findOne({
+      where: { id },
+      relations: ['config'],
+    });
+
+    if (!business) {
+      throw new NotFoundException('Negocio no encontrado');
+    }
+
+    // Actualizar campos del negocio
+    this.businessRepository.merge(business, {
+      ...businessData
+    });
+
+    const updatedBusiness = await this.businessRepository.save(business);
+
+    // Obtener la configuración actual asociada
+    let configEntity = await this.configBusinessRepository.findOne({
+      where: { Business: { id } },
+    });
+
+    if (configEntity) {
+      this.configBusinessRepository.merge(configEntity, {
+        ...config,
+      });
+      configEntity = await this.configBusinessRepository.save(configEntity);
+    } else {
+      // Si no existe, la crea
+      configEntity = await this.configBusinessRepository.save(
+        this.configBusinessRepository.create({
+          ...config,
+          Business: updatedBusiness,
+        }),
+      );
+    }
+
+    if (configEntity) {
+      await clearCacheByPrefix('business_all_');
+    }
+
+    return {
+      message: 'Negocio Actualizado Correctamente',
+      data: updatedBusiness,
+    };
   }
+
 
   remove(id: number) {
     return `This action removes a #${id} business`;

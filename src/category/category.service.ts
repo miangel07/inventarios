@@ -1,10 +1,10 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
-import { PaginationQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
+import { PaginationQueryDto, paramsQueryDto, StatusGeneric } from 'src/utils/TypeGeneric';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { clearCacheByPrefix, remember } from 'src/utils/CacheStores.utils';
 import { Cache } from 'cache-manager';
@@ -30,38 +30,45 @@ export class CategoryService {
       data: savedCategory,
     };
   }
-  async findAll({ page = 1, limit = 10, search = '' }: PaginationQueryDto) {
-
-
+  async findAll(
+    { page = 1, limit = 10, search = '' }: PaginationQueryDto,
+    user: paramsQueryDto
+  ) {
     const skip = (page - 1) * limit;
+
+    const businessId = user.businessId;
+    if (!businessId) {
+      throw new BadRequestException('No se ha proporcionado el businessId');
+    }
+
     const [data, total] = await remember(
       this.cacheManager,
-      `category_all`,
+      `category_all_business_${businessId}_page_${page}_limit_${limit}_search_${search}`,
       60 * 60 * 24 * 7,
       async () => {
-        const query = this.categoryRepository.createQueryBuilder('Category')
+        const query = this.categoryRepository.createQueryBuilder('Category');
 
-
-
+        query.where('Category.businessId = :businessId', { businessId });
 
         if (search) {
-          query.where(
-            `LOWER(Category.NameCategory) LIKE :search
-             OR LOWER(Category.Status) LIKE :search`,
-            { search: `%${search.toLowerCase()}%` },
+          query.andWhere(
+            `(LOWER(Category.NameCategory) LIKE :search
+            OR LOWER(Category.Status) LIKE :search)`,
+            { search: `%${search.toLowerCase()}%` }
           );
         }
 
         query.skip(skip).take(limit).orderBy('Category.id', 'ASC');
 
         return query.getManyAndCount();
-      },
-
+      }
     );
 
-
     return {
-      message: data.length > 0 ? 'Categorias listadas correctamente' : 'No hay Categorias registradas',
+      message:
+        data.length > 0
+          ? 'Categorías listadas correctamente'
+          : 'No hay categorías registradas',
       data,
       meta: {
         total,
@@ -71,6 +78,7 @@ export class CategoryService {
       },
     };
   }
+
 
 
   findOne(id: number) {

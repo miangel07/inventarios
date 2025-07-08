@@ -5,7 +5,7 @@ import { UpdateInventoryDto } from './dto/update-inventory.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
- @UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('inventory')
 export class InventoryController {
   constructor(private readonly inventoryService: InventoryService) { }
@@ -16,7 +16,7 @@ export class InventoryController {
   }
 
 
-  @Roles('admin', 'store_admin') 
+  @Roles('admin', 'store_admin')
   @Get()
   findAll() {
     return this.inventoryService.findAll();
@@ -29,7 +29,11 @@ export class InventoryController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateInventoryDto: UpdateInventoryDto) {
-    return this.inventoryService.update(+id, updateInventoryDto);
+    return this.inventoryService.update({
+      productId: updateInventoryDto.productId,
+      storageId: updateInventoryDto.storageId,
+      quantity: updateInventoryDto.quantity,
+    });
   }
 
   @Delete(':id')

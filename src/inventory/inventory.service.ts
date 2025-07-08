@@ -60,9 +60,34 @@ export class InventoryService {
     return `This action returns a #${id} inventory`;
   }
 
-  update(id: number, updateInventoryDto: UpdateInventoryDto) {
-    return `This action updates a #${id} inventory`;
+  async update({
+    productId,
+    storageId,
+    quantity,
+  }: {
+    productId: number;
+    storageId: number;
+    quantity: number;
+  }) {
+    // 🔍 1. Buscar el inventario existente
+    const inventory = await this.InventoriRepository.findOne({
+      where: { productId, storageId },
+    });
+
+
+    if (!inventory) {
+      throw new NotFoundException(
+        'Inventario no encontrado para este producto y bodega'
+      );
+    }
+
+   
+    inventory.quantity = quantity;
+
+ 
+    return await this.InventoriRepository.save(inventory);
   }
+
 
   remove(id: number) {
     return `This action removes a #${id} inventory`;

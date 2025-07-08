@@ -1,20 +1,24 @@
-import {  IsDateString, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from "class-validator";
-import { FieldsGeneric } from "src/utils/TypeGeneric";
-import { IsUniqueProduct } from "../validation/validation-products";
-
+import {
+    IsString,
+    IsNotEmpty,
+    IsOptional,
+    IsNumber,
+    IsPositive,
+    IsInt,
+    IsDateString,
+} from 'class-validator';
 
 export class CreateProductDto {
     @IsString()
-    @IsNotEmpty(FieldsGeneric('Nombre del producto'))
+    @IsNotEmpty()
     nameProduct: string;
 
     @IsString()
-    @IsNotEmpty(FieldsGeneric('Descripción del producto', 'La'))
-
+    @IsNotEmpty()
     description: string;
+
     @IsString()
-    @IsNotEmpty(FieldsGeneric('Codigo'))
-    @IsUniqueProduct('internalCode')
+    @IsNotEmpty()
     internalCode: string;
 
     @IsOptional()
@@ -22,6 +26,8 @@ export class CreateProductDto {
     brand?: string;
 
     @IsNumber()
+    @IsPositive()
+
     quantity: number;
 
     @IsOptional()
@@ -46,7 +52,7 @@ export class CreateProductDto {
 
     @IsOptional()
     @IsDateString()
-    expirationDate?: Date
+    expirationDate?: Date;
 
     @IsInt()
     @IsPositive()
@@ -58,9 +64,10 @@ export class CreateProductDto {
 
     @IsInt()
     @IsPositive()
+    businessId: number;
+
     @IsOptional()
+    @IsInt()
+    @IsPositive()
     storage?: number;
-
-
-
 }

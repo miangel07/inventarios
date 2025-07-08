@@ -11,7 +11,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
   @UseGuards(JwtAuthGuard)
-  @Roles('admin', 'storage_admin')
+  /* @Roles('admin', 'storage_admin') */
   @Post()
   create(@Body() createProductDto: CreateProductDto, @Req() req: any,) {
     return this.productsService.create(createProductDto, req.user);
@@ -32,8 +32,8 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(+id, updateProductDto);
+  update(@Param('id') id: string, @Req() req: any, @Body() updateProductDto: UpdateProductDto) {
+    return this.productsService.update(+id, updateProductDto, req.user);
   }
 
   @Delete(':id')

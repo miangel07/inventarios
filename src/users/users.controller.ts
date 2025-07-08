@@ -19,7 +19,7 @@ export class UserController {
     return Create;
   }
 
-  @Roles('admin')
+  @Roles('admin', 'super_admin')
   @Post('createUserStorage')
   async createUserStorage(@Body() CreateUserDto: CreateUserStorageDto, @Req() req: any,) {
     const Create = await this.UserService.createUserStorage(CreateUserDto, req.user);
