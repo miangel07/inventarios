@@ -45,7 +45,9 @@ export class Users {
   @OneToMany(() => Storage, (storage) => storage.manager)
   managedStorages: Storage[];
 
-  @ManyToOne(() => Business, (Business) => Business.user)
+  @ManyToOne(() => Business, (Business) => Business.user, {
+    nullable: true
+  })
   Business: Business;
 
   @Column({ unique: true, collation: 'utf8mb4_unicode_ci' })

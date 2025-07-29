@@ -22,9 +22,8 @@ import KeyvRedis from '@keyv/redis';
 import { UserSeeder } from './seed/users.seed';
 import { RoleSeeder } from './seed/Role.seed';
 import { BusinessSeeder } from './seed/Business.seed';
-
-
-
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [CacheModule.registerAsync({
@@ -53,7 +52,12 @@ import { BusinessSeeder } from './seed/Business.seed';
       configService.get<TypeOrmModuleOptions>('typeorm')!,
 
 
-  }), StorageModule, RoleModule, MeasureUnitModule, CategoryModule, ProductsModule, InventoryModule, CompaniesModule, LoansModule, LoanDetailsModule, TransfersModule, TransferDetailModule, AuthModule, BusinessModule, ConfigBusinessModule],
+  }),
+  ServeStaticModule.forRoot({
+    rootPath: join(__dirname, '..', 'uploads'),
+    serveRoot: '/uploads',
+  })
+    , StorageModule, RoleModule, MeasureUnitModule, CategoryModule, ProductsModule, InventoryModule, CompaniesModule, LoansModule, LoanDetailsModule, TransfersModule, TransferDetailModule, AuthModule, BusinessModule, ConfigBusinessModule],
 
   controllers: [],
   providers: [UserSeeder, RoleSeeder, BusinessSeeder

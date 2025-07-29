@@ -36,22 +36,23 @@ export class UserService {
 
   async create(CreateUserDto: CreateUserDto, user?: paramsQueryDto) {
 
-
+    const { business } = CreateUserDto
     const hashedPassword = await bcrypt.hash(CreateUserDto.password, 10);
     const role = await this.roleRepository.findOneBy({ id: CreateUserDto.Rol });
     const isrole = role?.nameRol === 'super_admin'
-    const business = await this.businessRepository.findOneBy({ id: isrole ? CreateUserDto.business : user?.businessId });
+    const businessData = await this.businessRepository.findOneBy({ id: business ? business : user?.businessId });
+
 
     if (!role) {
       throw new NotFoundException('Rol no encontrado');
     }
-    if (!business) {
+    if (!businessData) {
       throw new NotFoundException('Neogocio no encontrado');
     }
     const savedUsers = await this.UserRepository.save({
       ...CreateUserDto,
       Rol: role,
-      Business: business,
+      Business: businessData,
       password: hashedPassword,
       createDate: new Date(),
     });
@@ -68,24 +69,25 @@ export class UserService {
   }
 
   async createUserStorage(CreateUserDto: CreateUserStorageDto, user: paramsQueryDto) {
-    const { storageData, ...userData } = CreateUserDto
+    const { storageData, business, ...userData } = CreateUserDto
     const hashedPassword = await bcrypt.hash(userData.password, 10);
 
     const role = await this.roleRepository.findOneBy({ id: userData.Rol });
-    const business = await this.businessRepository.findOneBy({ id: user.businessId });
+    const businessData = await this.businessRepository.findOneBy({ id: business ? business : user.businessId });
 
     if (!role) {
       throw new NotFoundException('Rol no encontrado');
     }
 
-    if (!business) {
+    if (!businessData) {
       throw new NotFoundException('Negocio no encontrado');
     }
 
     const savedUsers = await this.UserRepository.save({
       ...userData,
       Rol: role,
-      Business: business,
+      Business: businessData,
+      businessId: businessData.id,
       password: hashedPassword,
       createDate: new Date(),
     });

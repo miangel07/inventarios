@@ -55,7 +55,7 @@ export class CreateUserDto {
 
   @IsPositive()
   @IsNumber()
-  @IsNotEmpty(FieldsGeneric('Negocio'))
+  @IsOptional()
   business: number;
 
   @IsPositive()

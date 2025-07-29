@@ -29,16 +29,17 @@ export class ProductsService {
   ) { }
 
   // falta crear las categorias y la unidad de medida para poder registrar un producto
-  async create(createProductDto: CreateProductDto, user: paramsQueryDto) {
+  async create(createProductDto: CreateProductDto, user: paramsQueryDto, file: Express.Multer.File) {
     const {
       measureUnitId,
       categoryId,
       businessId,
       storage,
       quantity,
+      img,
       ...rest
     } = createProductDto;
-
+    const imgPath = file ? `/uploads/products/${file.filename}` : '/uploads/product/ImgDefault.webp';
     // Validar existencia de relaciones
     const measureUnit = await this.measureUnitService.findOne(measureUnitId);
     if (!measureUnit) {
@@ -64,6 +65,7 @@ export class ProductsService {
     // Crear el producto
     const newProduct = this.ProducRepository.create({
       ...rest,
+      img: imgPath,
       measureUnitId,
       categoryId,
       businessId,

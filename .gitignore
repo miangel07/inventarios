@@ -2,6 +2,12 @@
 /dist
 /node_modules
 /build
+# Ignore everything in /uploads/products
+/uploads/products/*
+
+# Except ImgDefault.webp
+!/uploads/products/ImgDefault.webp
+
 
 # Logs
 logs

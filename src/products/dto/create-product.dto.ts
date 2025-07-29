@@ -7,6 +7,7 @@ import {
     IsInt,
     IsDateString,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateProductDto {
     @IsString()
@@ -25,16 +26,18 @@ export class CreateProductDto {
     @IsString()
     brand?: string;
 
+    @Type(() => Number)
     @IsNumber()
     @IsPositive()
-
     quantity: number;
 
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
     stockMax?: number;
 
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
     stockMin?: number;
 
@@ -54,19 +57,23 @@ export class CreateProductDto {
     @IsDateString()
     expirationDate?: Date;
 
+    @Type(() => Number)
     @IsInt()
     @IsPositive()
     measureUnitId: number;
 
+    @Type(() => Number)
     @IsInt()
     @IsPositive()
     categoryId: number;
 
+    @Type(() => Number)
     @IsInt()
     @IsPositive()
     businessId: number;
 
     @IsOptional()
+    @Type(() => Number)
     @IsInt()
     @IsPositive()
     storage?: number;
