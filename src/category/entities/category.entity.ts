@@ -13,7 +13,7 @@ export class Category {
     @Column(ObjetGenericStatus())
     Status: StatusGeneric
 
-    @Column({ unique: true })
+    @Column()
     businessId: number
 
     @OneToMany(() => Product, (Product) => Product.measureUnit)
