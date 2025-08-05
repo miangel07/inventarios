@@ -13,6 +13,9 @@ export class Category {
     @Column(ObjetGenericStatus())
     Status: StatusGeneric
 
+    @Column({ unique: true })
+    businessId: number
+
     @OneToMany(() => Product, (Product) => Product.measureUnit)
     Product: Product[];
 }

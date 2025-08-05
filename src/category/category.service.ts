@@ -18,9 +18,9 @@ export class CategoryService {
     private readonly cacheManager: Cache,
   ) { }
 
-  async create(createCategoryDto: CreateCategoryDto) {
+  async create(createCategoryDto: CreateCategoryDto, user: paramsQueryDto) {
     const category = this.categoryRepository.create(createCategoryDto);
-    const savedCategory = await this.categoryRepository.save(category);
+    const savedCategory = await this.categoryRepository.save({ ...category, businessId: user.businessId });
     if (!savedCategory) {
       throw new Error('Error al crear la categoría.');
     }
@@ -37,6 +37,8 @@ export class CategoryService {
     const skip = (page - 1) * limit;
 
     const businessId = user.businessId;
+
+
     if (!businessId) {
       throw new BadRequestException('No se ha proporcionado el businessId');
     }
